@@ -1,19 +1,20 @@
-// const ShuntingYardParsingService = () => {
+import { timeStamp } from "console";
 
-// };
 class Operator {
     readonly token:string;
     readonly precedence:number;
+    readonly associativity:string;
 
-    public static readonly powerOperator = new Operator('^', 4);
-    public static readonly plusOperator = new Operator('+', 2);
-    public static readonly minusOperator = new Operator('-', 2);
-    public static readonly multiplyOperator = new Operator('*', 3);
-    public static readonly divideOperator = new Operator('/', 3);
+    public static readonly powerOperator = new Operator('^', 4, 'right');
+    public static readonly plusOperator = new Operator('+', 2, 'left');
+    public static readonly minusOperator = new Operator('-', 2, 'left');
+    public static readonly multiplyOperator = new Operator('*', 3, 'left');
+    public static readonly divideOperator = new Operator('/', 3, 'left');
   
-    private constructor(token: string, precedence: number) {
+    private constructor(token: string, precedence: number, associativity:string) {
         this.token = token;
         this.precedence = precedence;
+        this.associativity = associativity;
     }
 
     static getTokenOperator(token:string): Operator | never{
@@ -104,7 +105,8 @@ class ShuntingYardParsingService {
         }
         let stackOperator = Operator.getTokenOperator(top);
         let tokenOperator = Operator.getTokenOperator(token);
-        if(stackOperator.precedence >= tokenOperator.precedence) {
+        if(stackOperator.precedence >= tokenOperator.precedence 
+            && stackOperator.associativity !== 'right') {
             return true;
         }
         return false;
